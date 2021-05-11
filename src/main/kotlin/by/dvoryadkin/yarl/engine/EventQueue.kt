@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class EventQueue : EventPublisher, EventConsumer {
+class EventQueue : EventPublisher, EventConsumer, Clock {
     private val eventQueue: Queue<EventHolder> = PriorityQueue()
     private var currentTicks: Long = 0L
 
@@ -26,4 +26,6 @@ class EventQueue : EventPublisher, EventConsumer {
     private data class EventHolder(val event: Event, val targetTicks: Long) : Comparable<EventHolder> {
         override fun compareTo(other: EventHolder) = this.targetTicks.compareTo(other.targetTicks)
     }
+
+    override fun getCurrentTicks() = currentTicks
 }

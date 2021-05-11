@@ -14,8 +14,8 @@ class GameLoop(
 
     fun start() {
         while (!gameFinished) {
-            mainSurface.update()
             val event = eventConsumer.poll()
+            mainSurface.update()
             if (event != null) {
                 controllers.filter { it.supportsEvent(event) }.forEach {
                     it.handleEvent(event)

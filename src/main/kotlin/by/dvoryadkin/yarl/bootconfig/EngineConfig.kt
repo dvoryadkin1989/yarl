@@ -1,5 +1,6 @@
 package by.dvoryadkin.yarl.bootconfig
 
+import by.dvoryadkin.yarl.engine.GameContext
 import by.dvoryadkin.yarl.ui.MainSurface
 import com.googlecode.lanterna.TerminalSize
 import com.googlecode.lanterna.screen.Screen
@@ -35,5 +36,5 @@ class EngineConfig {
     }
 
     @Bean
-    fun mainSurface(): MainSurface = MainSurface(screen())
+    fun mainSurface(context: GameContext): MainSurface = MainSurface(screen(), context)
 }
