@@ -1,5 +1,6 @@
 package by.dvoryadkin.yarl.engine
 
+import by.dvoryadkin.yarl.engine.controller.EventController
 import by.dvoryadkin.yarl.ui.MainSurface
 import org.springframework.stereotype.Service
 

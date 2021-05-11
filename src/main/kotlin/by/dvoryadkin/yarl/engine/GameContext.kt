@@ -5,5 +5,5 @@ import org.springframework.stereotype.Service
 
 @Service
 class GameContext(val clock: Clock) {
-    val player = Player(100)
+    val player = Player()
 }
