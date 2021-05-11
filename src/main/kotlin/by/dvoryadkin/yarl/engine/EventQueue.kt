@@ -1,21 +1,19 @@
 package by.dvoryadkin.yarl.engine
 
+import org.springframework.stereotype.Service
 import java.util.*
 
-interface EventPublisher {
-    fun fireEvent(event: Event, ticksOffset: Long)
-}
-
-interface EventConsumer {
-    fun poll(): Event?
-}
-
+@Service
 class EventQueue : EventPublisher, EventConsumer {
     private val eventQueue: Queue<EventHolder> = PriorityQueue()
     private var currentTicks: Long = 0L
 
-    override fun fireEvent(event: Event, ticksOffset: Long) {
-        assert(ticksOffset > 0) { "ticksOffset must be positive" }
+    init {
+        eventQueue.add(EventHolder(PlayerTurnEvent(), 0))
+    }
+
+    override fun publishEvent(event: Event, ticksOffset: Long) {
+        assert(ticksOffset >= 0) { "ticksOffset must not be negative" }
         eventQueue.add(EventHolder(event, currentTicks + ticksOffset))
     }
 

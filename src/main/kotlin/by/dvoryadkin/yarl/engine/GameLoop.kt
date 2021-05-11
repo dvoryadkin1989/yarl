@@ -1,21 +1,28 @@
 package by.dvoryadkin.yarl.engine
 
-import by.dvoryadkin.yarl.global.player
 import by.dvoryadkin.yarl.ui.MainSurface
-import com.googlecode.lanterna.input.KeyStroke
-import com.googlecode.lanterna.input.KeyType
-import com.googlecode.lanterna.terminal.Terminal
+import org.springframework.stereotype.Service
 
-class GameLoop(private val terminal: Terminal, private val mainSurface: MainSurface) {
-    private val eventConsumer: EventConsumer = EventQueue()
+@Suppress("SpringJavaInjectionPointsAutowiringInspection")
+@Service
+class GameLoop(
+    private val mainSurface: MainSurface,
+    private val eventConsumer: EventConsumer,
+    private val controllers: List<EventController>
+) {
+    private var gameFinished = false
+
     fun start() {
-        do {
+        while (!gameFinished) {
             mainSurface.update()
             val event = eventConsumer.poll()
-            val keyStroke = terminal.readInput()
-            if (keyStroke == KeyStroke.fromString("a")) {
-                player.hp -= 1
+            if (event != null) {
+                controllers.filter { it.supportsEvent(event) }.forEach {
+                    it.handleEvent(event)
+                }
+            } else {
+                gameFinished = true
             }
-        } while (keyStroke.keyType != KeyType.Escape)
+        }
     }
 }

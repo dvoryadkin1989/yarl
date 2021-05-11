@@ -1,46 +1,24 @@
 package by.dvoryadkin.yarl
 
 import by.dvoryadkin.yarl.engine.GameLoop
-import by.dvoryadkin.yarl.ui.MainSurface
-import com.googlecode.lanterna.TerminalSize
-import com.googlecode.lanterna.screen.TerminalScreen
-import com.googlecode.lanterna.terminal.DefaultTerminalFactory
 import com.googlecode.lanterna.terminal.Terminal
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
-import java.awt.Frame
+import org.springframework.boot.builder.SpringApplicationBuilder
+import kotlin.system.exitProcess
 
-const val WINDOW_HEIGHT = 30
-const val WINDOW_WIDTH = 40
 
 @SpringBootApplication
-class YarlApplication : CommandLineRunner {
+class YarlApplication(private val terminal: Terminal, private val gameLoop: GameLoop) : CommandLineRunner {
     override fun run(vararg args: String?) {
-        val terminal = createTerminal()
-        val screen = TerminalScreen(terminal).apply {
-            cursorPosition = null
-            startScreen()
-        }
-        val mainSurface = MainSurface(screen)
-        val gameLoop = GameLoop(terminal, mainSurface)
         gameLoop.start()
         terminal.bell()
-    }
-
-    private fun createTerminal(): Terminal {
-        val defaultTerminalFactory = DefaultTerminalFactory()
-        defaultTerminalFactory.setInitialTerminalSize(TerminalSize(WINDOW_WIDTH, WINDOW_HEIGHT))
-        val terminal = defaultTerminalFactory.createTerminal()
-        terminal.setCursorVisible(false)
-        if (terminal is Frame) {
-            terminal.isResizable = false
-        }
-        return terminal
+        terminal.close()
+        exitProcess(0)
     }
 }
 
 fun main(args: Array<String>) {
-    runApplication<YarlApplication>(*args)
+    val builder = SpringApplicationBuilder(YarlApplication::class.java)
+    builder.headless(false).run(*args)
 }
-
